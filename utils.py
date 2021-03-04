@@ -41,3 +41,19 @@ def normalize_batch(batch):
     out =batch - Variable(mean)
     out = out / Variable(std)
     return out
+
+def quantize(img, rgb_range=1):
+    # change to 0~255
+    if isinstance(img, torch.Tensor):
+        img = img.clamp(0, 1)
+        img = img.mul(255/rgb_range).round()
+    
+    elif isinstance(img, np.ndarray):
+        img = img.clip(0, 1)
+        img = np.round(img*255)
+    
+    else:
+        raise NotImplementedError()
+
+    return img
+    
