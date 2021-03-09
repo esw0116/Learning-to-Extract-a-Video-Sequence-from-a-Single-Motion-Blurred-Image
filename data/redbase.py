@@ -14,13 +14,12 @@ from data import preprocessing
 
 
 class RedBase(data.Dataset):
-    def __init__(self, data_root, img_type, training, GAN=False):
+    def __init__(self, data_root, img_type, training, seq_len=5):
         super(RedBase, self).__init__()
         self.img_type = img_type
         self.training = training
-        self.use_gan = GAN
         self.patch_size = 256
-        self.seq_len = 5
+        self.seq_len = seq_len
 
         self._set_directory(data_root)
         self.data_dict = self._scan(training)
@@ -111,16 +110,7 @@ class RedBase(data.Dataset):
             crop_imgs = torch.stack(crop_imgs, dim=0)
             blur_img = crop_imgs[-1]
             crop_imgs = crop_imgs[:-1]
-            if not self.use_gan:
-                return crop_imgs, blur_img
-            else:
-                randcrop_imgs = preprocessing.np2tensor(*imgs)
-                randcrop_imgs = preprocessing.gan_common_crop(*randcrop_imgs, patch_size=self.patch_size)
-                randcrop_imgs = preprocessing.gan_augment(*randcrop_imgs)
-                randcrop_imgs = torch.stack(randcrop_imgs, dim=0)
-                randcrop_imgs = randcrop_imgs[:-1]
-
-                return crop_imgs, randcrop_imgs, blur_img
+            return crop_imgs, blur_img
         
         else:
             imgs = preprocessing.np2tensor(*imgs)

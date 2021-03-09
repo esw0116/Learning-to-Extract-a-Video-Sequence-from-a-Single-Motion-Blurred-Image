@@ -57,3 +57,17 @@ def quantize(img, rgb_range=1):
 
     return img
     
+
+def meanshift(batch, rgb_mean, rgb_std, device, norm=True):
+    if isinstance(rgb_mean, list):
+        rgb_mean = torch.Tensor(rgb_mean)
+    if isinstance(rgb_std, list):
+        rgb_std = torch.Tensor(rgb_std)
+
+    rgb_mean = rgb_mean.reshape(1,3,1,1).to(device)
+    rgb_std = rgb_std.reshape(1,3,1,1).to(device)
+
+    if norm:
+        return (batch - rgb_mean) / rgb_std
+    else:
+        return (batch * rgb_std) + rgb_mean
