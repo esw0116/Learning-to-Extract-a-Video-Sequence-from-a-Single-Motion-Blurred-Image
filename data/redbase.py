@@ -89,10 +89,10 @@ class RedBase(data.Dataset):
             blurfile = os.path.join(blurfile_dir, blurfile_file)
             filepath_list.append(blurfile)
 
-        if self.training:
-            r = random.random()
-            if r > 0.5:
-                filepath_list.reverse()
+        # if self.training:
+        #     r = random.random()
+        #     if r > 0.5:
+        #         filepath_list.reverse()
 
         if self.img_type == 'img':
             fn_read = imageio.imread
@@ -117,7 +117,7 @@ class RedBase(data.Dataset):
             imgs = torch.stack(imgs, dim=0)
             blur_img = imgs[-1]
             imgs = imgs[:-1]
-            return imgs, filepath_list, blur_img
+            return imgs, filepath_list[:-1], blur_img
 
     def __len__(self):
         return self.n_samples
